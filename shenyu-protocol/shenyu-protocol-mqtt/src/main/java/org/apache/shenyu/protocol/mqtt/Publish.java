@@ -50,19 +50,26 @@ public class Publish extends MessageType {
         String topic = msg.variableHeader().topicName();
         ByteBuf payload = msg.payload();
         String message = byteBufToString(payload);
-
         //// todo qos
         MqttQoS mqttQoS = msg.fixedHeader().qosLevel();
-        if (mqttQoS.value() > 0) {
-            Singleton.INST.get(TopicRepository.class).add(topic, message);
-        }
+        Singleton.INST.get(TopicRepository.class).add(topic, message);
         int packetId = msg.variableHeader().packetId();
         CompletableFuture.runAsync(() -> send(topic, payload, packetId));
 
-        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(PUBACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
-        MqttMessageIdVariableHeader mqttMsgIdVariableHeader = MqttMessageIdVariableHeader.from(packetId);
-        MqttPubAckMessage mqttPubAckMessage = new MqttPubAckMessage(mqttFixedHeader, mqttMsgIdVariableHeader);
-        ctx.writeAndFlush(mqttPubAckMessage);
+        switch (mqttQoS.value()) {
+            case 0:
+                break;
+
+            case 1:
+                qos1(ctx, packetId);
+                break;
+
+            case 2:
+                qos2(ctx, packetId);
+                break;
+            default:
+                break;
+        }
 
     }
 
@@ -76,15 +83,23 @@ public class Publish extends MessageType {
     /**
      * todo qos1.
      */
-    private void qos1() {
+    private void qos1(final ChannelHandlerContext ctx, final int packetId) {
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(PUBACK, false, MqttQoS.AT_LEAST_ONCE, false, 0);
+        MqttMessageIdVariableHeader mqttMsgIdVariableHeader = MqttMessageIdVariableHeader.from(packetId);
 
+        MqttPubAckMessage mqttPubAckMessage = new MqttPubAckMessage(mqttFixedHeader, mqttMsgIdVariableHeader);
+        ctx.writeAndFlush(mqttPubAckMessage);
     }
 
     /**
      * todo qos2.
      */
-    private void qos2() {
+    private void qos2(final ChannelHandlerContext ctx, final int packetId) {
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(PUBACK, false, MqttQoS.EXACTLY_ONCE, false, 0);
+        MqttMessageIdVariableHeader mqttMsgIdVariableHeader = MqttMessageIdVariableHeader.from(packetId);
 
+        MqttPubAckMessage mqttPubAckMessage = new MqttPubAckMessage(mqttFixedHeader, mqttMsgIdVariableHeader);
+        ctx.writeAndFlush(mqttPubAckMessage);
     }
 
     private String byteBufToString(final ByteBuf byteBuf) {

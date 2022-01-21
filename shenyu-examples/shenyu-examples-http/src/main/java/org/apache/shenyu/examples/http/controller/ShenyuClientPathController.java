@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.shenyu.examples.http.controller;
 
 import org.apache.shenyu.client.springmvc.annotation.ShenyuSpringMvcClient;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * ShenyuClientPathController
+ * ShenyuClientPathController.
  */
 @RestController
 public class ShenyuClientPathController {
@@ -32,7 +31,7 @@ public class ShenyuClientPathController {
     private static final String HELLO_SUFFIX = "I'm Shenyu-Gateway System. Welcome!";
     
     /**
-     * hello
+     * hello.
      *
      * @return result
      */
@@ -50,6 +49,7 @@ public class ShenyuClientPathController {
      * @return result
      */
     @RequestMapping("shenyu/client/hi")
+    @ShenyuSpringMvcClient(path = "shenyu/client/hi", desc = "shenyu client annotation register")
     public String hello(final String name) {
         return "hi! " + name + "! " + HELLO_SUFFIX;
     }

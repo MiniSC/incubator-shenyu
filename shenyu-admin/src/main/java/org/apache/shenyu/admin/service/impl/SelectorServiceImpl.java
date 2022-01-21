@@ -202,7 +202,7 @@ public class SelectorServiceImpl implements SelectorService {
     public int delete(final List<String> ids) {
 
         if (CollectionUtils.isEmpty(ids)) {
-            return ids.size();
+            return 0;
         }
         Set<String> idSet = new HashSet<>(ids);
         List<SelectorDO> selectorDOList = selectorMapper.selectByIdSet(idSet);
@@ -436,7 +436,7 @@ public class SelectorServiceImpl implements SelectorService {
         selectorConditionDTO.setParamType(ParamTypeEnum.URI.getName());
         selectorConditionDTO.setParamName("/");
         selectorConditionDTO.setOperator(OperatorEnum.MATCH.getAlias());
-        selectorConditionDTO.setParamValue(contextPath + "/**");
+        selectorConditionDTO.setParamValue(contextPath + AdminConstants.URI_SUFFIX);
         return Collections.singletonList(selectorConditionDTO);
     }
 }

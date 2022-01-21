@@ -123,6 +123,32 @@ public class HttpHelper {
             return (S) respBody;
         }
     }
+    
+    /**
+     * Send a put http request to shenyu gateway.
+     *
+     * @param <S> type of response object
+     * @param <Q> type of request object
+     * @param path path
+     * @param req request body as an object
+     * @param respType response type passed to {@link Gson#fromJson(String, Class)}
+     * @return response s
+     * @throws IOException IO exception
+     */
+    public <S, Q> S putGateway(final String path, final Q req, final Class<S> respType) throws IOException {
+        Request request = new Request.Builder()
+                .put(RequestBody.create(GSON.toJson(req), JSON))
+                .url(GATEWAY_END_POINT + path)
+                .build();
+        Response response = client.newCall(request).execute();
+        String respBody = Objects.requireNonNull(response.body()).string();
+        LOG.info("postGateway({}) resp({})", path, respBody);
+        try {
+            return GSON.fromJson(respBody, respType);
+        } catch (Exception e) {
+            return (S) respBody;
+        }
+    }
 
     /**
      * Send a get http request to shenyu gateway without headers.
@@ -148,15 +174,14 @@ public class HttpHelper {
      * @throws IOException IO exception
      */
     public <S> S getFromGateway(final String path, final Map<String, Object> headers, final Type type) throws IOException {
-        Request.Builder requestBuilder = new Request.Builder().url(GATEWAY_END_POINT + path);
-        if (!CollectionUtils.isEmpty(headers)) {
-            headers.forEach((key, value) -> requestBuilder.addHeader(key, String.valueOf(value)));
-        }
-        Request request = requestBuilder.build();
-        Response response = client.newCall(request).execute();
+        Response response = getHttpService(GATEWAY_END_POINT + path, headers);
         String respBody = Objects.requireNonNull(response.body()).string();
         LOG.info("getFromGateway({}) resp({})", path, respBody);
-        return GSON.fromJson(respBody, type);
+        try {
+            return GSON.fromJson(respBody, type);
+        } catch (Exception e) {
+            return (S) respBody;
+        }
     }
 
     /**
@@ -168,7 +193,19 @@ public class HttpHelper {
      * @throws IOException IO exception
      */
     public Response getResponseFromGateway(final String path, final Map<String, Object> headers) throws IOException {
-        Request.Builder requestBuilder = new Request.Builder().url(GATEWAY_END_POINT + path);
+        return getHttpService(GATEWAY_END_POINT + path, headers);
+    }
+
+    /**
+     * Send a get http request to http service with headers.
+     *
+     * @param url url
+     * @param headers headers
+     * @return response
+     * @throws IOException IO exception
+     */
+    public Response getHttpService(final String url, final Map<String, Object> headers) throws IOException {
+        Request.Builder requestBuilder = new Request.Builder().url(url);
         if (!CollectionUtils.isEmpty(headers)) {
             headers.forEach((key, value) -> requestBuilder.addHeader(key, String.valueOf(value)));
         }

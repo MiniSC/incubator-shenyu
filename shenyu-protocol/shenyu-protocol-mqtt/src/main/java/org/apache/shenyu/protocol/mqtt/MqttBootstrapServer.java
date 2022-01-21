@@ -17,9 +17,17 @@
 
 package org.apache.shenyu.protocol.mqtt;
 
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.ResourceLeakDetector;
 import org.apache.shenyu.common.utils.Singleton;
 import org.apache.shenyu.protocol.mqtt.repositories.BaseRepository;
 import org.reflections.Reflections;
+
+import java.util.Locale;
 
 /**
  * mqtt server.
@@ -27,6 +35,14 @@ import org.reflections.Reflections;
 public class MqttBootstrapServer implements BootstrapServer {
 
     private static final String REPOSITORY_PACKAGE_NAME = "org.apache.shenyu.protocol.mqtt.repositories";
+
+    private static final MqttContext ENV = new MqttContext();
+
+    private EventLoopGroup bossGroup;
+
+    private EventLoopGroup workerGroup;
+
+    private ChannelFuture future;
 
     @Override
     public void init() {
@@ -39,12 +55,27 @@ public class MqttBootstrapServer implements BootstrapServer {
 
     @Override
     public void start() {
-
+        //// todo thread start mqtt server
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.valueOf(ENV.getLeakDetectorLevel().toUpperCase(Locale.ROOT)));
+        bossGroup = new NioEventLoopGroup(ENV.getBossGroupThreadCount());
+        workerGroup = new NioEventLoopGroup(ENV.getWorkerGroupThreadCount());
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        bootstrap.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new MqttTransportServerInitializer(ENV.getMaxPayloadSize()));
+        try {
+            future = bootstrap.bind(ENV.getPort()).sync();
+            //// todo log
+        } catch (InterruptedException e) {
+            //// todo log
+        }
     }
 
     @Override
     public void shutdown() {
-
+        bossGroup.shutdownGracefully();
+        workerGroup.shutdownGracefully();
+        future.channel().close();
     }
 
     private void initRepositories() throws IllegalAccessException, InstantiationException {
