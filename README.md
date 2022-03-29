@@ -47,15 +47,28 @@
  ![](https://shenyu.apache.org/img/architecture/shenyu-framework.png)  
  
 -------------------------------------------------------------------------------- 
-    
- 
+
+# Why named ShenYu
+
+ShenYu (神禹) is the honorific name for our ancient monarch Xia Yu (also known in later times as Da Yu), 
+who left behind the touching story of the three times he crossed the Yellow River for the benefit of the people and successfully managed the flooding of the river. 
+He is known as one of the three greatest kings of ancient China, along with Yao and Shun.
+
+   * Firstly, the name ShenYu is to promote the traditional virtues of our Chinese civilisation.
+
+   * Secondly, the most important thing about the gateway is the governance of the traffic.
+
+   * Finally, the community will do things in a fair, just, open and meritocratic way, paying tribute to ShenYu while also conforming to the Apache Way.
+
+-------------------------------------------------------------------------------- 
+
 # Features
 
-   * ShenYu provides ability such as current limiting, fusing, forwarding, routing monitoring and so on by its plugins.
+   * ShenYu provides ability such as current limiting, fusing, forwarding, routing, monitoring and so on by its plugins.
    
-   * Support HTTP, RESTFul, WebSocket, Dubbo, GRPC, Tars and Spring Cloud Proxy.
+   * Support HTTP, RESTFul, WebSocket, Dubbo, gRPC, Tars and Spring Cloud Proxy.
    
-   * Plug-in hot plug, users can customize the development.
+   * Plugin hot plug, users can customize the development.
    
    * Selectors and rules are dynamically configured for flexible matching.
 
@@ -94,11 +107,14 @@
 }
 ```
 
-* Set routing rules（Standalone）
+* Set routing rules (Standalone)
+
+Add `localKey: 123456` to Headers. If you need to customize the localKey, you can use the sha512 tool to generate the key based on plaintext and update the `shenyu.local.sha512Key` property.
 
 ```
 curl --location --request POST 'http://localhost:9195/shenyu/plugin/selectorAndRules' \
 --header 'Content-Type: application/json' \
+--header 'localKey: 123456' \
 --data-raw '{
     "pluginName": "divide",
     "selectorHandler": "[{\"upstreamUrl\":\"127.0.0.1:8080\"}]",
@@ -138,11 +154,11 @@ curl --location --request POST 'http://localhost:9195/shenyu/plugin/selectorAndR
  
  Of course, users can also customize plugins to meet their own needs.
  
- If you want to customize, see [custom-plugin](https://shenyu.apache.org/docs/developer/custom-plugin/)
+ If you want to customize, see [custom-plugin](https://shenyu.apache.org/docs/developer/custom-plugin/) .
  
 --------------------------------------------------------------------------------  
  
-# Selector & rule 
+# Selector & Rule 
 
   According to your HTTP request headers, selectors and rules are used to route your requests.
   
@@ -158,7 +174,7 @@ curl --location --request POST 'http://localhost:9195/shenyu/plugin/selectorAndR
  
   Since all data have been cached using ConcurrentHashMap in the JVM, it's very fast.
   
-  When user have changed the configuration in the background management, ShenYu will dynamically updates its cache by listening to the ZooKeeper node, WebSocket push, HTTP longPull.
+  ShenYu dynamically updates the cache by listening to the ZooKeeper node (or WebSocket push, HTTP long polling) when the user changes configuration information in the background management.
   
   ![](https://shenyu.apache.org/img/shenyu/dataSync/shenyu-config-processor-en.png)
   
@@ -187,6 +203,6 @@ curl --location --request POST 'http://localhost:9195/shenyu/plugin/selectorAndR
 
 # Known Users
 
-In order of registration, More access companies are welcome to register at [https://github.com/apache/incubator-shenyu/issues/68](https://github.com/apache/incubator-shenyu/issues/68) (For open source users only)
+In order of registration, More access companies are welcome to register at [https://github.com/apache/incubator-shenyu/issues/68](https://github.com/apache/incubator-shenyu/issues/68) (For open source users only) .
 
 All Users : [Known Users](https://shenyu.apache.org/community/user-registration)

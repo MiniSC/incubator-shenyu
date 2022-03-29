@@ -43,6 +43,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -111,11 +112,13 @@ public class ShenyuConfiguration {
      * Plugin data subscriber plugin data subscriber.
      *
      * @param pluginDataHandlerList the plugin data handler list
+     * @param eventPublisher event publisher
      * @return the plugin data subscriber
      */
     @Bean
-    public PluginDataSubscriber pluginDataSubscriber(final ObjectProvider<List<PluginDataHandler>> pluginDataHandlerList) {
-        return new CommonPluginDataSubscriber(pluginDataHandlerList.getIfAvailable(Collections::emptyList));
+    public PluginDataSubscriber pluginDataSubscriber(final ObjectProvider<List<PluginDataHandler>> pluginDataHandlerList,
+                                                     final ApplicationEventPublisher eventPublisher) {
+        return new CommonPluginDataSubscriber(pluginDataHandlerList.getIfAvailable(Collections::emptyList), eventPublisher);
     }
     
     /**
@@ -149,13 +152,15 @@ public class ShenyuConfiguration {
      * Local dispatcher filter web filter.
      *
      * @param dispatcherHandler the dispatcher handler
+     * @param shenyuConfig the shenyuConfig
+     *
      * @return the web filter
      */
     @Bean
     @Order(-200)
-    @ConditionalOnProperty(name = "shenyu.switchConfig.local", havingValue = "true", matchIfMissing = true)
-    public WebFilter localDispatcherFilter(final DispatcherHandler dispatcherHandler) {
-        return new LocalDispatcherFilter(dispatcherHandler);
+    @ConditionalOnProperty(name = "shenyu.local.enable", havingValue = "false", matchIfMissing = true)
+    public WebFilter localDispatcherFilter(final DispatcherHandler dispatcherHandler, final ShenyuConfig shenyuConfig) {
+        return new LocalDispatcherFilter(dispatcherHandler, shenyuConfig.getLocal().getSha512Key());
     }
     
     /**

@@ -30,17 +30,8 @@ BEGIN
     PERFORM public.dblink_exec('CREATE DATABASE ' || _db || ' template template0;');
   END IF;
 
-	PERFORM public.dblink_connect('init_conn','host=localhost user=' || _user || ' password=' || _password || ' dbname=' ||_db);
-	PERFORM public.dblink_exec('init_conn', 'BEGIN');
-    PERFORM public.dblink_exec('init_conn','CREATE OR REPLACE FUNCTION update_timestamp() RETURNS TRIGGER AS
-                                          $$
-                                          BEGIN
-                                          NEW.date_updated = NOW()::TIMESTAMP(0);
-                                          RETURN NEW;
-                                          END
-                                          $$
-                                          language plpgsql;');
-	PERFORM public.dblink_exec('init_conn', 'COMMIT');
+    PERFORM public.dblink_connect('init_conn','host=localhost user=' || _user || ' password=' || _password || ' dbname=' ||_db);
+
 
 -- ----------------------------------------
 -- create table app_auth if not exist ---
@@ -201,7 +192,7 @@ ELSE
 	PERFORM public.dblink_exec('init_conn', ' COMMENT ON COLUMN "dashboard_user"."enabled" IS ''' || 'delete or not' || '''');
 	PERFORM public.dblink_exec('init_conn', ' COMMENT ON COLUMN "dashboard_user"."date_created" IS ''' || 'create time' || '''');
 	PERFORM public.dblink_exec('init_conn', ' COMMENT ON COLUMN "dashboard_user"."date_updated" IS ''' || 'update time' || '''');
-	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "dashboard_user" VALUES (''' || '1' || ''', ''' || 'admin' || ''', ''' || 'bbiB8zbUo3z3oA0VqEB/IA==' || ''', 1, 1, ''' || '2018-06-23 15:12:22' || ''', ''' || '2018-06-23 15:12:23' || ''');');
+	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "dashboard_user" VALUES (''' || '1' || ''', ''' || 'admin' || ''', ''' || 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413' || ''', 1, 1, ''' || '2018-06-23 15:12:22' || ''', ''' || '2018-06-23 15:12:23' || ''');');
 
 	-- ----------------------------
 	-- Indexes structure for table dashboard_user
@@ -373,7 +364,7 @@ ELSE
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '12' || ''', ''' || 'resilience4j' || ''', NULL, ''' || 'FaultTolerance' || ''', 310, 0, ''' || '2020-11-09 01:19:10' || ''', ''' || '2020-11-09 01:19:10' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '13' || ''', ''' || 'tars' || ''', ''' || '{"multiSelectorHandle":"1","multiRuleHandle":"0"}' || ''', ''' || 'Proxy' || ''', 310, 0, ''' || '2020-11-09 01:19:10' || ''', ''' || '2020-11-09 01:19:10' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '14' || ''', ''' || 'contextPath' || ''', NULL, ''' || 'HttpProcess' || ''', 80, 1, ''' || '2020-11-09 01:19:10' || ''', ''' || '2020-11-09 01:19:10' || ''');');
-	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '15' || ''', ''' || 'grpc' || ''', ''' || '{"multiSelectorHandle":"1","multiRuleHandle":"0"}' || ''', ''' || 'Proxy' || ''', 310, 0, ''' || '2020-11-09 01:19:10' || ''', ''' || '2020-11-09 01:19:10' || ''');');
+	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '15' || ''', ''' || 'grpc' || ''', ''' || '{"multiSelectorHandle":"1","multiRuleHandle":"0","threadpool":"cached"}' || ''', ''' || 'Proxy' || ''', 310, 0, ''' || '2020-11-09 01:19:10' || ''', ''' || '2020-11-09 01:19:10' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '16' || ''', ''' || 'redirect' || ''', NULL, ''' || 'HttpProcess' || ''', 110, 0, ''' || '2020-11-09 01:19:10' || ''', ''' || '2020-11-09 01:19:10' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '17' || ''', ''' || 'motan' || ''', ''' || '{"register":"127.0.0.1:2181"}' || ''', ''' || 'Proxy' || ''', 310, 0, ''' || '2020-11-09 01:19:10' || ''', ''' || '2020-11-09 01:19:10' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '18' || ''', ''' || 'logging' || ''', NULL, ''' || 'Logging' || ''', 160, 0, ''' || '2021-04-29 13:37:35' || ''', ''' || '2021-04-29 13:37:35' || ''');');
@@ -389,13 +380,15 @@ ELSE
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '3' || ''', ''' || 'rewrite' || ''', NULL, ''' || 'HttpProcess' || ''', 90, 0, ''' || '2018-06-23 10:26:34' || ''', ''' || '2018-06-25 13:59:31' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '4' || ''', ''' || 'rateLimiter' || ''', ''' || '{"master":"mymaster","mode":"standalone","url":"192.168.1.1:6379","password":"abc"}' || ''', ''' || 'FaultTolerance' || ''', 60, 0, ''' || '2018-06-23 10:26:37' || ''', ''' || '2018-06-13 15:34:48' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '5' || ''', ''' || 'divide' || ''', ''' || '{"multiSelectorHandle":"1","multiRuleHandle":"0"}' || ''', ''' || 'Proxy' || ''', 200, 1, ''' || '2018-06-25 10:19:10' || ''', ''' || '2018-06-13 13:56:04' || ''');');
-	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '6' || ''', ''' || 'dubbo' || ''', ''' || '{"register":"zookeeper://localhost:2181","multiSelectorHandle":"1"}' || ''', ''' || 'Proxy' || ''', 310, 0, ''' || '2018-06-23 10:26:41' || ''', ''' || '2018-06-11 10:11:47' || ''');');
-	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '7' || ''', ''' || 'monitor' || ''', ''' || '{"metricsName":"prometheus","host":"localhost","port":"9190","async":"true"}' || ''', ''' || 'Monitor' || ''', 170, 0, ''' || '2018-06-25 13:47:57' || ''', ''' || '2018-06-25 13:47:57' || ''');');
+	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '6' || ''', ''' || 'dubbo' || ''', ''' || '{"register":"zookeeper://localhost:2181","multiSelectorHandle":"1","threadpool":"cached","corethreads":0,"threads":2147483647,"queues":0}' || ''', ''' || 'Proxy' || ''', 310, 0, ''' || '2018-06-23 10:26:41' || ''', ''' || '2018-06-11 10:11:47' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '8' || ''', ''' || 'springCloud' || ''', NULL, ''' || 'Proxy' || ''', 200, 0, ''' || '2018-06-25 13:47:57' || ''', ''' || '2018-06-25 13:47:57' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '9' || ''', ''' || 'hystrix' || ''', NULL, ''' || 'FaultTolerance' || ''', 130, 0, ''' || '2020-01-15 10:19:10' || ''', ''' || '2020-01-15 10:19:10' || ''');');
 	PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '27' || ''', ''' || 'generalContext' || ''', NULL, ''' || 'Common' || ''', 125, 0, ''' || '2021-11-24 21:38:48' || ''', ''' || '2021-11-24 21:38:48' || ''');');
-    PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '28' || ''', ''' || 'mqtt' || ''', ''' || 'Proxy' || ''', 125, 0, ''' || '2022-01-12 20:33:50' || ''', ''' || '2022-01-12 20:34:07' || ''');');
-    PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '28' || ''', ''' || 'mqtt' || ''', ''' || '{"port": 9500,"bossGroupThreadCount": 1,"maxPayloadSize": 65536,"workerGroupThreadCount": 12,"userName": "shenyu","password": "shenyu","isEncryptPassword": false,"encryptMode": "","leakDetectorLevel": "DISABLED"}' || ''', ''' || 'Proxy' || ''', 310, 0, ''' || '2022-01-12 20:33:50' || ''', ''' || '2022-01-12 20:33:50' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '28' || ''', ''' || 'mqtt' || ''', ''' || '{"port": 9500,"bossGroupThreadCount": 1,"maxPayloadSize": 65536,"workerGroupThreadCount": 12,"userName": "shenyu","password": "shenyu","isEncryptPassword": false,"encryptMode": "","leakDetectorLevel": "DISABLED"}' || ''', ''' || 'Proxy' || ''', 125, 0, ''' || '2022-01-12 20:33:50' || ''', ''' || '2022-01-12 20:33:50' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '29' || ''', ''' || 'loggingRocketMQ' || ''', ''' || '{"topic":"shenyu-access-logging", "namesrvAddr": "localhost:9876","producerGroup":"shenyu-plugin-logging-rocketmq"}' || ''', ''' || 'Logging' || ''', 170, 0, ''' || '2022-03-20 09:33:50' || ''', ''' || '2022-03-20 09:33:50' || ''');');
+   PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '29' || ''', ''' || 'loggingRocketMQ' || ''', ''' || '{"topic":"shenyu-access-logging", "namesrvAddr": "localhost:9876"}' || ''', ''' || 'Logging' || ''', 170, 0, ''' || '2022-03-20 09:33:50' || ''', ''' || '2022-03-20 09:33:50' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT INTO "plugin" VALUES (''' || '30' || ''', ''' || 'cache' || ''', ''' || '{"cacheType":"memory"}' || ''', ''' || 'Cache' || ''', 180, 0, null, null);');
+
 
 
 PERFORM public.dblink_exec('init_conn', 'COMMIT');
@@ -454,32 +447,6 @@ ELSE
 	  "field" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
 	  "type" "pg_catalog"."int2_ops" ASC NULLS LAST
 	);');
-
-	-- ----------------------------
-	-- Primary FUNCTION for table plugin_handle
-	-- ----------------------------
-	PERFORM public.dblink_exec('init_conn',  ' CREATE OR REPLACE FUNCTION plugin_handle_insert() RETURNS trigger AS $BODY$
-            BEGIN
-                NEW.ID := nextval('''||'plugin_handle_ID_seq' || ''');
-                RETURN NEW;
-            END;
-            $BODY$
-              LANGUAGE plpgsql;'
-    );
-
-	-- ----------------------------
-	-- Create TRIGGER for table plugin_handle
-	-- ----------------------------
-	PERFORM public.dblink_exec('init_conn',  ' CREATE TRIGGER plugin_handle_check_insert
-        BEFORE INSERT ON plugin_handle
-        FOR EACH ROW
-        WHEN (NEW.ID IS NULL)
-        EXECUTE PROCEDURE plugin_handle_insert();'
-    );
-	PERFORM public.dblink_exec('init_conn',  ' CREATE TRIGGER plugin_handle_trigger
-	          BEFORE UPDATE ON plugin_handle
-	          FOR EACH ROW EXECUTE PROCEDURE update_timestamp()'
-    );
 
     ----------------------------
 	-- Records of plugin_handle
@@ -543,10 +510,7 @@ ELSE
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '11' || ''', ''' || 'register' || ''', ''' || 'register' || ''', 2, 3, 2, NULL);');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '2' || ''', ''' || 'model' || ''', ''' || 'model' || ''', 2, 3, 1, NULL);');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'register' || ''', ''' || 'register' || ''', 2, 3, 1, NULL);');
-    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '7' || ''', ''' || 'metricsName' || ''', ''' || 'metricsName' || ''', 2, 3, 1, NULL);');
-    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '7' || ''', ''' || 'host' || ''', ''' || 'host' || ''', 2, 3, 2, NULL);');
-    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '7' || ''', ''' || 'port' || ''', ''' || 'port' || ''', 2, 3, 3, ''' || '{"rule":"/^[0-9]*$/"}' || ''');');
-    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '7' || ''', ''' || 'async' || ''', ''' || 'async' || ''', 2, 3, 4, NULL);');
+
     /*insert "plugin_handle" data for plugin rateLimiter*/
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '4' || ''' ,''' || 'algorithmName' || ''',''' || 'algorithmName' || ''',''' || '3' || ''', 2, 1, ''' || '{"required":"1","defaultValue":"slidingWindow","rule":""}' || ''');');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '4' || ''' ,''' || 'keyResolverName' || ''',''' || 'keyResolverName' || ''',''' || '3' || ''', 2, 4, ''' || '{"required":"1","defaultValue":"WHOLE_KEY_RESOLVER","rule":""}' || ''');');
@@ -566,6 +530,7 @@ ELSE
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '5' || ''', ''' || 'multiRuleHandle' || ''', ''' || 'multiRuleHandle' || ''', 3, 3, 1, null);');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '5' || ''', ''' || 'headerMaxSize' || ''', ''' || 'headerMaxSize' || ''', 1, 2, 3, ''' || '{"defaultValue":"10240","rule":""}' || ''');');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '5' || ''', ''' || 'requestMaxSize' || ''', ''' || 'requestMaxSize' || ''', 1, 2, 4, ''' || '{"defaultValue":"102400","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '5' || ''', ''' || 'retryStrategy' || ''', ''' || 'retryStrategy' || ''', 3, 2, 0, ''' || '{"required":"0","defaultValue":"current","placeholder":"retryStrategy","rule":""}' || ''');');
 
     /*insert "plugin_handle" data for tars*/
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '13' || ''', ''' || 'upstreamHost' || ''', ''' || 'host' || ''', 2, 1, 0, null);');
@@ -587,6 +552,7 @@ ELSE
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '15' || ''', ''' || 'status' || ''', ''' || 'status' || ''', 3, 1, 6, ''' || '{"defaultValue":"true","rule":""}' || ''');');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '15' || ''', ''' || 'multiSelectorHandle' || ''', ''' || 'multiSelectorHandle' || ''', 3, 3, 0, null);');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '15' || ''', ''' || 'multiRuleHandle' || ''', ''' || 'multiRuleHandle' || ''', 3, 3, 1, null);');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '15' || ''', ''' || 'threadpool' || ''', ''' || 'threadpool' || ''', 3, 3, 0, ''' || '{"required":"0","defaultValue":"cached","placeholder":"threadpool","rule":""}' || ''');');
 
     /*insert "plugin_handle" data for context path*/
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort ) VALUES (''' || '14' || ''', ''' || 'contextPath' || ''', ''' || 'contextPath' || ''', 2, 2, 0);');
@@ -624,6 +590,10 @@ ELSE
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'version' || ''', ''' || 'version' || ''', ''' || '2' || ''', ''' || '1' || ''', ''' || '4' || ''', ''' || '{"required":"0","placeholder":"version","rule":""}' || ''');');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'warmup' || ''', ''' || 'warmupTime' || ''', ''' || '1' || ''', ''' || '1' || ''', ''' || '6' || ''', ''' || '{"defaultValue":"0","placeholder":"warmup time (ms)","rule":""}' || ''');');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'weight' || ''', ''' || 'weight' || ''', ''' || '1' || ''', ''' || '1' || ''', ''' || '5' || ''', ''' || '{"defaultValue":"50","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'threadpool' || ''', ''' || 'threadpool' || ''', ''' || '3' || ''', ''' || '3' || ''', ''' || '0' || ''', ''' || '{"required":"0","defaultValue":"cached","placeholder":"threadpool","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'corethreads' || ''', ''' || 'corethreads' || ''', ''' || '1' || ''', ''' || '3' || ''', ''' || '0' || ''', ''' || '{"required":"0","defaultValue":"0","placeholder":"corethreads","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'threads' || ''', ''' || 'threads' || ''', ''' || '1' || ''', ''' || '3' || ''', ''' || '0' || ''', ''' || '{"required":"0","defaultValue":"2147483647","placeholder":"threads","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id ,  field ,  label ,  data_type ,  type ,  sort ,  ext_obj ) VALUES (''' || '6' || ''', ''' || 'queues' || ''', ''' || 'queues' || ''', ''' || '1' || ''', ''' || '3' || ''', ''' || '0' || ''', ''' || '{"required":"0","defaultValue":"0","placeholder":"queues","rule":""}' || ''');');
 
     /*insert "plugin_handle" data for websocket*/
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '26' || ''', ''' || 'host' || ''', ''' || 'host' || ''', 2, 1, 0, null);');
@@ -651,6 +621,30 @@ ELSE
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '28' || ''', ''' || 'isEncryptPassword' || ''', ''' || 'isEncryptPassword' || ''', 2, 3, 1, null);');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '28' || ''', ''' || 'encryptMode' || ''', ''' || 'encryptMode' || ''', 2, 3, 1, null);');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '28' || ''', ''' || 'leakDetectorLevel' || ''', ''' || 'leakDetectorLevel' || ''', 2, 3, 1, null);');
+
+    /*insert plugin_handle data for plugin loggingRocketMQ*/
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'topic' || ''', ''' || 'topic' || ''', 2, 3, 1, ''' || '{"required":"1","defaultValue":"shenyu-access-logging"}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'namesrvAddr' || ''', ''' || 'namesrvAddr' || ''', 2, 3, 2, ''' || '{"required":"1","defaultValue":"localhost:9876"}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'producerGroup' || ''', ''' || 'producerGroup' || ''', 2, 3, 3, ''' || '{"required":"1","defaultValue":"shenyu-plugin-logging-rocketmq"}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'sampleRate' || ''', ''' || 'sampleRate' || ''', 2, 3, 4, ''' || '{"required":"0","defaultValue":"1","placeholder":"optional,0,0.01~1"}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'maxResponseBody' || ''', ''' || 'maxResponseBody' || ''', 1, 3, 5, ''' || '{"required":"0","defaultValue":524288}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'maxRequestBody' || ''', ''' || 'maxRequestBody' || ''', 1, 3, 6, ''' || '{"required":"0","defaultValue":524288}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'compressAlg' || ''', ''' || 'compressAlg' || ''', 3, 3, 7, ''' || '{"required":"0","defaultValue":"none"}' || ''');');
+
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'topic' || ''', ''' || 'topic' || ''', 2, 1, 1, ''' || '{"required":"0","defaultValue":"","placeholder":"optional"}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '29' || ''', ''' || 'sampleRate' || ''', ''' || 'sampleRate' || ''', 2, 1, 2, ''' || '{"required":"0","defaultValue":"","placeholder":"optional,0,0.01~1"}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'cacheType' || ''', ''' || 'cacheType' || ''', 3, 3, 1, ''' || '{"required":"1","defaultValue":"memory","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'database' || ''', ''' || 'database' || ''', 1, 3, 2, ''' || '{"required":"0","defaultValue":"0","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'master' || ''', ''' || 'master' || ''', 2, 3, 3, ''' || '{"required":"0","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'mode' || ''', ''' || 'mode' || ''', 2, 3, 4, ''' || '{"required":"0","defaultValue":"standalone","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'url' || ''', ''' || 'url' || ''', 2, 3, 5, ''' || '{"required":"0","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'password' || ''', ''' || 'password' || ''', 2, 3, 6, ''' || '{"required":"0","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'maxIdle' || ''', ''' || 'maxIdle' || ''', 1, 3, 7, ''' || '{"required":"0","defaultValue":"8","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'minIdle' || ''', ''' || 'minIdle' || ''', 1, 3, 8, ''' || '{"required":"0","defaultValue":"0","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'maxActive' || ''', ''' || 'maxActive' || ''', 1, 3, 9, ''' || '{"required":"0","defaultValue":"8","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'maxWait' || ''', ''' || 'maxWait' || ''', 3, 3, 10, ''' || '{"required":"0","defaultValue":"-1","rule":""}' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO "plugin_handle" ( plugin_id , field , label , data_type , type , sort , ext_obj ) VALUES (''' || '30' || ''', ''' || 'timeoutSeconds' || ''', ''' || 'timeoutSeconds' || ''', 1, 2, 0, ''' || '{"required":"0","defaultValue":"60","rule":""}' || ''');');
+
 
 PERFORM public.dblink_exec('init_conn', 'COMMIT');
 
@@ -981,30 +975,6 @@ ELSE
 	PERFORM public.dblink_exec('init_conn',  'ALTER SEQUENCE shenyu_dict_ID_seq OWNED BY shenyu_dict.ID;');
 
 	-- ----------------------------
-	-- Primary FUNCTION for table shenyu_dict
-	-- ----------------------------
-	PERFORM public.dblink_exec('init_conn',  ' CREATE OR REPLACE FUNCTION shenyu_dict_insert() RETURNS trigger AS $BODY$
-            BEGIN
-                NEW.ID := nextval('''||'shenyu_dict_ID_seq' || ''');
-                RETURN NEW;
-            END;
-            $BODY$
-              LANGUAGE plpgsql;'
-    );
-
-	-- ----------------------------
-	-- Create TRIGGER for table shenyu_dict
-	-- ----------------------------
-	PERFORM public.dblink_exec('init_conn',  ' CREATE TRIGGER shenyu_dict_check_insert
-        BEFORE INSERT ON shenyu_dict
-        FOR EACH ROW
-        WHEN (NEW.ID IS NULL)
-        EXECUTE PROCEDURE shenyu_dict_insert();');
-	PERFORM public.dblink_exec('init_conn',  ' CREATE TRIGGER shenyu_dict_trigger
-	          BEFORE UPDATE ON shenyu_dict
-	          FOR EACH ROW EXECUTE PROCEDURE update_timestamp()');
-
-	-- ----------------------------
 	-- Records of shenyu_dict
 	-- ----------------------------
 	PERFORM public.dblink_exec('init_conn',  'INSERT  INTO  shenyu_dict  ( type , dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'degradeRuleGrade' || ''',''' || 'DEGRADE_GRADE_RT' || ''',''' || 'slow call ratio' || ''',''' || '0' || ''',''' || 'degrade type-slow call ratio' || ''',1,1);');
@@ -1065,9 +1035,26 @@ ELSE
     /*insert dict for dubbo plugin*/
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'gray' || ''', ''' || 'GRAY_STATUS' || ''', ''' || 'close' || ''', ''' || 'false' || ''', ''' || 'close' || ''', ''' || '1' || ''', ''' || '1' || ''');');
     PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'gray' || ''', ''' || 'GRAY_STATUS' || ''', ''' || 'open' || ''', ''' || 'true' || ''', ''' || 'open' || ''', ''' || '0' || ''', ''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'threadpool' || ''', ''' || 'THREADPOOL' || ''', ''' || 'shared' || ''', ''' || 'shared' || ''', ''' || '' || ''', ''' || '4' || ''', ''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'threadpool' || ''', ''' || 'THREADPOOL' || ''', ''' || 'fixed' || ''', ''' || 'fixed' || ''', ''' || '' || ''', ''' || '3' || ''', ''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'threadpool' || ''', ''' || 'THREADPOOL' || ''', ''' || 'eager' || ''', ''' || 'eager' || ''', ''' || '' || ''', ''' || '2' || ''', ''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'threadpool' || ''', ''' || 'THREADPOOL' || ''', ''' || 'cached' || ''', ''' || 'cached' || ''', ''' || '' || ''', ''' || '0' || ''', ''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'threadpool' || ''', ''' || 'THREADPOOL' || ''', ''' || 'limited' || ''', ''' || 'limited' || ''', ''' || '' || ''', ''' || '1' || ''', ''' || '1' || ''');');
+
+    /*insert dict for divide plugin*/
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'retryStrategy' || ''', ''' || 'RETRY_STRATEGY' || ''', ''' || 'current' || ''', ''' || 'current' || ''', ''' || 'current' || ''', ''' || '0' || ''', ''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'retryStrategy' || ''', ''' || 'RETRY_STRATEGY' || ''', ''' || 'failover' || ''', ''' || 'failover' || ''', ''' || 'failover' || ''', ''' || '1' || ''', ''' || '1' || ''');');
 
     /* insert dict for init resource,permission table */
-    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'table'|| ''', ''' || 'INIT_FLAG' || ''', ''' || 'status' || ''',''' ||  'false' ||''',''' || 'table(resource,permission) init status' ||''',''' || '0' || ''',''' || '1' || ''');');;
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'table'|| ''', ''' || 'INIT_FLAG' || ''', ''' || 'status' || ''',''' ||  'false' ||''',''' || 'table(resource,permission) init status' ||''',''' || '0' || ''',''' || '1' || ''');');
+
+    /* insert dict for compress algorithm  */
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'compressAlg'|| ''', ''' || 'COMPRESS_ALG' || ''', ''' || 'none' || ''',''' ||  'none' ||''',''' || '' ||''',''' || '0' || ''',''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'compressAlg'|| ''', ''' || 'COMPRESS_ALG' || ''', ''' || 'LZ4' || ''',''' ||  'LZ4' ||''',''' || '' ||''',''' || '1' || ''',''' || '1' || ''');');
+
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'cacheType'|| ''', ''' || 'CACHE_TYPE_MEMORY' || ''', ''' || 'memory' || ''',''' ||  'memory' ||''',''' || 'use memory to cache data' ||''',''' || '0' || ''',''' || '1' || ''');');
+    PERFORM public.dblink_exec('init_conn',  'INSERT  INTO shenyu_dict ( type ,  dict_code ,  dict_name ,  dict_value ,  "desc" ,  sort ,  enabled ) VALUES (''' || 'cacheType'|| ''', ''' || 'CACHE_TYPE_REDIS'  || ''', ''' || 'redis'  || ''',''' ||  'redis' ||''','''  || 'use redis to cache data' ||''',''' || '1' || ''',''' || '1' || ''');');
+
 
 	PERFORM public.dblink_exec('init_conn', 'COMMIT');
 END IF;
